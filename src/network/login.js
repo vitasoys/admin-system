@@ -1,7 +1,16 @@
 import {request} from "./request";
 
-export function LoginData() {
+export function LoginData(username,password) {
   return request({
-    url: ''
+    url: '/login',
+    method: 'post',
+    data: {
+      "username": username,
+      "password": password
+    },
+    headers:{
+      'Content-type': 'application/json'
+    }
   })
 }
+

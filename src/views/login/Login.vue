@@ -11,7 +11,7 @@
         <el-form-item label="密码">
           <el-input v-model="formData.password" show-password></el-input>
         </el-form-item>
-        <el-button type="primary">登录</el-button>
+        <el-button type="primary" @click.prevent="handleLogin">登录</el-button>
       </el-form>
     </div>
   </div>
@@ -32,10 +32,32 @@
       };
     },
     methods: {
-      LoginData() {
-        LoginData().then(res => {
-
+      // 登录请求
+      handleLogin() {
+        LoginData(this.formData.username, this.formData.password).then(res => {
+          console.log(res)
+          if(res.data.success) {
+            this.LoginSuccess()
+            this.$store.commit({
+              type: 'ModificationState',
+              State: 'online'
+            })
+            this.$router.push({name: 'home'})
+          } else {
+            this.LoginError()
+          }
         })
+      },
+
+      // 验证
+      LoginSuccess() {
+        this.$message({
+          message: '登录成功',
+          type: 'success'
+        });
+      },
+      LoginError() {
+        this.$message.error('用户名或密码错误')
       }
     }
   }
