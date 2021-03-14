@@ -35,7 +35,6 @@
       // 登录请求
       handleLogin() {
         LoginData(this.formData.username, this.formData.password).then(res => {
-          console.log(res)
           if(res.data.success) {
             this.LoginSuccess()
             this.$store.commit({
