@@ -3,6 +3,7 @@ import Router from 'vue-router'
 
 const Login = () => import('../views/login/Login')
 const Home = () => import('../views/home/Home')
+const UserSystem = () => import('../views/userSystem/UserSystem')
 
 Vue.use(Router)
 
@@ -16,7 +17,8 @@ export default new Router({
     {
       name: 'home',
       path: '/home',
-      component: Home
+      component: Home,
+      children: [{name: 'usersystem',path: '/usersystem',component: UserSystem}]
     }
   ],
   mode: 'history'
