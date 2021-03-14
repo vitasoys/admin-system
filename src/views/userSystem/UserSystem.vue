@@ -44,9 +44,10 @@
       </el-table-column>
 
       <el-table-column
-        prop="date"
         label="创建时间">
-        {{data | fmtdate}}
+        <template slot-scope="scope">
+          {{scope.row.date | fmtdate}}
+        </template>
       </el-table-column>
 
       <el-table-column
@@ -69,9 +70,25 @@
           <el-button plain type="danger" icon="el-icon-delete" circle></el-button>
         </template>
       </el-table-column>
-
     </el-table>
 <!--    分页-->
+<!--    @size-change 每页条数发生变化时触发
+        @current-change 当前页改变时触发
+        :current-page 设置当前页是第几页
+        :page-sizes 每页显示多少条
+        :page-size 第一次运行时显示多少条
+        :total 总数
+-->
+    <el-pagination
+      class="page"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="page"
+      :page-sizes="[2, 5, 10, 20]"
+      :page-size="2"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total">
+    </el-pagination>
   </el-card>
 </template>
 
@@ -82,11 +99,12 @@
     name: "UserSystem",
     data() {
       return {
-        query: '',
-        page: 1,
-        pagenum: 10,
-        tableData: [],
-        value: true,
+        query: '', // 搜索关键字
+        page: 1, // 页码
+        pagenum: 2, // 每页的数据数量
+        total: 0, // 总数
+        tableData: [], // 数据
+        value: true, // 开关
       }
     },
     created() {
@@ -96,8 +114,21 @@
       UserInfo() { // 渲染用户以及分页数据
         UserInfo(this.page,this.pagenum).then(res => {
           this.tableData = res.data.data
+          this.total = res.data.total
         })
-      }
+      },
+        handleSizeChange(val) {
+          console.log(`每页 ${val} 条`);
+          this.pagenum = val
+          this.page = 1
+          this.UserInfo()
+
+        },
+        handleCurrentChange(val) {
+          console.log(`当前页: ${val}`);
+          this.page = val
+          this.UserInfo()
+        }
     }
   }
 </script>
@@ -108,5 +139,8 @@
   }
   .input-with-select {
     width: 300px;
+  }
+  .page {
+    margin: 20px 0;
   }
 </style>
