@@ -10,8 +10,11 @@
 <!--    搜索框-->
     <el-row class="user-search">
       <el-col>
-        <el-input placeholder="请输入内容" v-model="query" class="input-with-select">
-          <el-button slot="append" icon="el-icon-search"></el-button>
+        <el-input placeholder="按照id精准搜索" v-model="queryID" class="input-with-select">
+          <el-button @click="UserSearchId" slot="append" icon="el-icon-search"></el-button>
+        </el-input>
+        <el-input placeholder="按照姓名模糊搜索" v-model="queryName" class="input-with-select">
+          <el-button @click="UserSearchName" slot="append" icon="el-icon-search"></el-button>
         </el-input>
         <el-button type="success">添加用户</el-button>
       </el-col>
@@ -94,12 +97,15 @@
 
 <script>
   import {UserInfo} from "../../network/user-info";
+  import {UserSearchId} from "../../network/user-info";
+  import {UserSearchName} from "../../network/user-info";
 
   export default {
     name: "UserSystem",
     data() {
       return {
-        query: '', // 搜索关键字
+        queryID: '', // 搜索ID
+        queryName: '', // 搜索名字
         page: 1, // 页码
         pagenum: 2, // 每页的数据数量
         total: 0, // 总数
@@ -117,18 +123,31 @@
           this.total = res.data.total
         })
       },
-        handleSizeChange(val) {
-          console.log(`每页 ${val} 条`);
-          this.pagenum = val
-          this.page = 1
-          this.UserInfo()
+      UserSearchId() { // 按照id搜索
+        console.log(this.queryID)
+        UserSearchId(this.queryID).then(res => {
+          this.tableData = res.data.data
+          this.total = res.data.total
+        })
+      },
+      UserSearchName() { // 按照name搜索
+        UserSearchName(this.queryName).then(res => {
+          this.tableData = res.data.data
+          this.total = res.data.total
+        })
+      },
+      handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+        this.pagenum = val
+        this.page = 1
+        this.UserInfo()
 
-        },
-        handleCurrentChange(val) {
-          console.log(`当前页: ${val}`);
-          this.page = val
-          this.UserInfo()
-        }
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+        this.page = val
+        this.UserInfo()
+      }
     }
   }
 </script>
